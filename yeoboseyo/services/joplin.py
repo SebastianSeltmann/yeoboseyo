@@ -75,10 +75,14 @@ class Joplin(Service):
                         if result is not None:
                             return result
             notebook_id = search_folders_recursively(folders, trigger.joplin_folder) or 0
+            try:
+                author = entry.author
+            except AttributeError:
+                author = '' # Not all feeds always provide an author
             data = {'title': entry.title,
                     'body': content,
                     'parent_id': notebook_id,
-                    'author': entry.author,
+                    'author': author,
                     'source_url': entry.link}
             url = f'{self.joplin_url}:{self.joplin_port}/notes'
             logger.debug(url)
