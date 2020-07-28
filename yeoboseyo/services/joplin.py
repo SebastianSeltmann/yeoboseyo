@@ -66,16 +66,15 @@ class Joplin(Service):
         # build the json data
         folders = await self.get_folders()
         if folders:
-            notebook_id = 0
-            for folder in folders:
-                if folder.get('title') == trigger.joplin_folder:
-                    notebook_id = folder.get('id')
-            if notebook_id == 0:
+            def search_folders_recursively(folders, search_title):
                 for folder in folders:
-                    if 'children' in folder:
-                        for child in folder.get('children'):
-                            if child.get('title') == trigger.joplin_folder:
-                                notebook_id = child.get('id')
+                    if folder.get('title') == search_title:
+                        return folder.get('id')
+                    elif 'children' in folder:
+                        result = search_folders_recursively(folder.get('children'), search_title)
+                        if result is not None:
+                            return result
+            notebook_id = search_folders_recursively(folders, trigger.joplin_folder) or 0
             data = {'title': entry.title,
                     'body': content,
                     'parent_id': notebook_id,
