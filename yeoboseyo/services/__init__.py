@@ -75,7 +75,7 @@ class Service:
         """
         # call pypandoc to convert html to markdown
         logger.debug("%s %s %s" % (self.set_content(entry), self.format_to, self.format_from))
-        content = pypandoc.convert(self.set_content(entry), self.format_to, format=self.format_from)
+        content = pypandoc.convert_text(self.set_content(entry), self.format_to, format=self.format_from)
         content += await self.footer(name, entry.link)
         return content
 
